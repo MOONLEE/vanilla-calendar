@@ -2,10 +2,11 @@
   --vcal-bg-color: #fff;
   --vcal-border-radius: 0;
   --vcal-border-color: #e7e9ed;
-  --vcal-today-bg-color: #10989E;
-  --vcal-today-color: #fff;
-  --vcal-selected-bg-color: #E7E9ED;
-  --vcal-selected-color: #333;
+  --vcal-today-bg-color: #fff;
+  --vcal-today-color: #333;
+  --vcal-week-bg-color: #E7E9ED;
+  --vcal-selected-bg-color: #10989E;
+  --vcal-selected-color: #fff;
 }
 
 #v-cal *, #v-cal *:before, #v-cal *:after {
@@ -60,7 +61,7 @@
 }
 
 #v-cal .vcal-week {
-  background-color: var(--vcal-selected-bg-color);
+  background-color: var(--vcal-week-bg-color);
   display: flex;
   flex-wrap: wrap;
 }
@@ -91,8 +92,19 @@
   flex: 0 0 14.28%;
   max-width: 14.28%;
   padding: 1.2rem 0;
+  height:10rem;
+  position: relative
 }
 
+
+#v-cal .vcal-date .sub-mark {
+    width: 100%;
+    position: absolute;
+    bottom: 1rem;
+    display: inline-block;
+    height: 20%;
+    background: #333;
+}
 #v-cal .vcal-date--active {
   cursor: pointer;
 }
