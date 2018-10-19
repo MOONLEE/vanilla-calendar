@@ -63,8 +63,8 @@ var vanillaCalendar = {
     dateEl.classList.add('vcal-data-num');
     newDay.className = 'vcal-date'
     var _strYear = this.date.getFullYear().toString();
-    var _strMonth =  (this.date.getMonth() + 1) < 10 ?  '0'+ (this.date.getMonth() + 1).toString() : (this.date.getMonth() + 1).toString()
-    var _strDate =  this.date.getDate() < 10 ?  '0'+ this.date.getDate().toString() : this.date.getDate().toString()
+    var _strMonth = this.leftZero((this.date.getMonth() + 1).toString());
+    var _strDate =  this.leftZero(this.date.getDate().toString());
     newDay.setAttribute('data-calendar-date', _strYear + _strMonth + _strDate)
 
     // if it's the first day of the month 
@@ -308,10 +308,10 @@ var vanillaCalendar = {
         var ___nextRowScheduleDate = __tdate - ___diff ;
 
         this.date.setDate(___nextRowScheduleDate);
-        var ___nextRowStartDate = this.date.getFullYear().toString() + (this.date.getMonth() + 1).toString() + this.leftZero(this.date.getDate().toString())
+        var ___nextRowStartDate = this.getYYYYMMDD(this.date)
         
         this.date.setDate(___nextRowScheduleDate -1);
-        var ___newRowStartDate = this.date.getFullYear().toString() + (this.date.getMonth() + 1).toString() + this.leftZero(this.date.getDate().toString())
+        var ___newRowStartDate = this.getYYYYMMDD(this.date)
 
         
         var __nextScheduleWrapper = document.createElement('div');
@@ -375,6 +375,10 @@ var vanillaCalendar = {
   leftZero: function (str) {
     return str < 10 ? "0" + str : str
   } ,
+
+  getYYYYMMDD: function (obj) {
+    return this.date.getFullYear().toString() + this.leftZero((this.date.getMonth() + 1).toString()) + this.leftZero(this.date.getDate().toString())
+  },
   
   monthsAsString: function (monthIndex) {
     return [
