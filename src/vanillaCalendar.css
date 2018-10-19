@@ -4,9 +4,11 @@
   --vcal-border-color: #e7e9ed;
   --vcal-today-bg-color: #fff;
   --vcal-today-color: #333;
-  --vcal-week-bg-color: #E7E9ED;
+  --vcal-week-bg-color: #963f00;
   --vcal-selected-bg-color: #10989E;
   --vcal-selected-color: #fff;
+  --vcal-week-color: #fff;
+  --vcal-schdule-bg-color: #e4f2f2;
 }
 
 #v-cal *, #v-cal *:before, #v-cal *:after {
@@ -64,6 +66,7 @@
   background-color: var(--vcal-week-bg-color);
   display: flex;
   flex-wrap: wrap;
+  color: var(--vcal-week-color);
 }
 
 #v-cal .vcal-week span {
@@ -77,10 +80,54 @@
   text-transform: uppercase;
 }
 
+#v-cal .vcal-date .vcal-schdule {
+  display:inline-block;
+  position: relative;
+  background: var(--vcal-schdule-bg-color);
+  z-index: 200;
+  height: 100%;
+  width: 100%;
+} 
+
+
+#v-cal .vcal-date .vcal-schdule-wrapper {
+  display:inline-block;
+  position:absolute;
+  bottom: 25%;
+  left: 0;
+  z-index: 200;
+  height: 35%;
+} 
+
+
+#v-cal .vcal-date .vcal-schdule-wrapper-right {
+  display:inline-block;
+  position:absolute;
+  bottom: 25%;
+  right: -0.5px;
+  z-index: 200;
+  height: 35%;
+
+}
+
+
+
+#v-cal .vcal-date .vcal-left-radius {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+
+#v-cal .vcal-date .vcal-right-radius {
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
 #v-cal .vcal-body {
-  background-color: rgba(var(--vcal-selected-bg-color), 0.3);
+  background-color: rgba(var(vcal-bg-color), 0.3);
   display: flex;
   flex-wrap: wrap;
+  position: relative;
 }
 
 #v-cal .vcal-date {
@@ -93,7 +140,9 @@
   max-width: 14.28%;
   padding: 1.2rem 0;
   height:10rem;
-  position: relative
+  position: relative;
+  border: 1px solid #ccc;      
+  box-sizing: border-box;
 }
 
 
