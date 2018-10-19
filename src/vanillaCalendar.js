@@ -163,6 +163,13 @@ var vanillaCalendar = {
 
 
     } else {
+      
+      var __selectedEl = document.querySelectorAll(
+        '[data-calendar-date="' + dateValue + '"]'
+      )[0]
+
+      __selectedEl.classList.add('vcal-date--selected');
+
       var picked = document.querySelectorAll(
         '[data-calendar-label="picked"]'
       )[0]
