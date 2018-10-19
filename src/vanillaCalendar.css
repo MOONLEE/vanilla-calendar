@@ -42,7 +42,7 @@
   text-align: center;
   &:active {
     border-radius: var(--vcal-border-radius);
-    box-shadow: 0 0 0 2px rgba(var(--vcal-today-bg-color), 0.1)
+    box-shadow: 0 0 0 2px rgba(var(--vcal-today-bg-color), 0.1);
   }
 }
 
@@ -75,7 +75,8 @@
   font-size: 1.2rem;
   font-weight: bold;
   max-width: 14.28%;
-  padding: 1.2rem 1.4rem;
+  padding-top: 1.4rem;
+  padding-bottom: 1.4rem;
   text-align: center;
   text-transform: uppercase;
 }
@@ -84,29 +85,30 @@
   display:inline-block;
   position: relative;
   background: var(--vcal-schdule-bg-color);
-  z-index: 200;
+  z-index: 200; 
   height: 100%;
   width: 100%;
 } 
 
 
+
 #v-cal .vcal-date .vcal-schdule-wrapper {
   display:inline-block;
   position:absolute;
-  bottom: 25%;
+  bottom: 15%;
   left: 0;
   z-index: 200;
-  height: 35%;
+  height: 40%;
 } 
 
 
 #v-cal .vcal-date .vcal-schdule-wrapper-right {
   display:inline-block;
   position:absolute;
-  bottom: 25%;
+  bottom: 15%;
   right: -0.5px;
   z-index: 200;
-  height: 35%;
+  height: 40%;
 
 }
 
@@ -139,10 +141,16 @@
   flex: 0 0 14.28%;
   max-width: 14.28%;
   padding: 1.2rem 0;
-  height:10rem;
+  height: 6rem;
   position: relative;
   border: 1px solid #ccc;      
   box-sizing: border-box;
+}
+
+#v-cal .vcal-date .vcal-data-num {
+  position: absolute;
+  top: 5px;
+
 }
 
 
