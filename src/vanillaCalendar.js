@@ -222,20 +222,19 @@ var vanillaCalendar = {
         this.date.getDay(),
         this.date.getFullYear()
       )
-      this.date.setDate(this.date.getDate() + 1)
+      this.date.setDate(this.date.getDate() + 1);
     }
 
-    this.date.setDate(this.date.getDate() - 1)
-    this.makeEmptyDay(7 - this.date.getDay())
+    this.date.setDate(this.date.getDate() - 1);
+    this.makeEmptyDay(7 - this.date.getDay());
     
     // while loop trips over and day is at 30/31, bring it back
-    this.date.setDate(1)
+    this.date.setDate(1);
     // this.date.setMonth(this.date.getMonth() - 1)
 
 
-    this.label.innerHTML =
-    this.monthsAsString(this.date.getMonth()) + ' ' + this.date.getFullYear()
-    this.dateClicked()
+    this.label.innerHTML = this.monthsAsString(this.date.getMonth()) + ' ' + this.date.getFullYear();
+    this.dateClicked();
   },
 
 
@@ -270,7 +269,8 @@ var vanillaCalendar = {
       __tday = __tday == 0 ? 7 : __tday;
 
       var __newScheduleWrapper = document.createElement('div');
-      __newScheduleWrapper.style.paddingLeft = '1.6rem';
+      __newScheduleWrapper.classList.add('vcal-schdule-wrapper-left-edge');
+      
 
       var __newSchedule = document.createElement('div');
       __newScheduleWrapper.appendChild(__newSchedule);
@@ -291,7 +291,7 @@ var vanillaCalendar = {
         __newSchedule.classList.add('vcal-right-radius');
 
 
-        __newScheduleWrapper.style.paddingRight = '1.6rem';
+        __newScheduleWrapper.classList.add('vcal-schdule-wrapper-right-edge')
         __newScheduleWrapper.style.width = (100 * (__tday - __fday + 1)) + '%';
         __newScheduleWrapper.classList.add('vcal-schdule-wrapper')
       
@@ -319,14 +319,18 @@ var vanillaCalendar = {
         
         var __nextSchedule = document.createElement('div');
         __nextScheduleWrapper.appendChild(__nextSchedule);
-        __nextScheduleWrapper.style.paddingRight = '1.6rem';
+        __nextScheduleWrapper.classList.add('vcal-schdule-wrapper-right-edge');
         __nextScheduleWrapper.style.width = 100 * (___diff + 1) + '%';
 
         __nextSchedule.setAttribute('data-caldendar-from', __fromdate);
         __nextSchedule.setAttribute('data-caldendar-schedule-to', __todate);
         __nextSchedule.setAttribute('data-caldendar-schedule-grp', _keyList[i]);
 
-        
+        if (___diff < 2 ) {
+          __nextSchedule.innerHTML = __text;
+          __newSchedule.innerHTML = '';
+        }
+
         var __el = document.querySelectorAll(
           '[data-calendar-date="' + ___newRowStartDate + '"]'
         )[0];

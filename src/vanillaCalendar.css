@@ -113,6 +113,14 @@
 }
 
 
+#v-cal .vcal-date .vcal-schdule-wrapper-left-edge {
+  padding-left : 2rem;
+}
+
+#v-cal .vcal-date .vcal-schdule-wrapper-right-edge {
+  padding-right : 4rem;
+}
+
 
 #v-cal .vcal-date .vcal-left-radius {
   border-top-left-radius: 1rem;
