@@ -9,11 +9,15 @@ var vanillaCalendar = {
   selectedEndDate: null,
   options: {
     isMultiSelect: false,
-    disablePastDays: false
+    disablePastDays: false,
+    disableSelect: false,
+    disableSelectSchedule: true,
+    onSelectedSchedule: null 
   },
   date: new Date(),
   todaysDate: new Date(),
   schedule: {}, 
+  selectedSchedule : null,
   
 
   init: function (options, month, day) {
@@ -21,7 +25,7 @@ var vanillaCalendar = {
     if (options) {
       var __keys = Object.keys(options)
       for (var __i = 0; __i < __keys.length; __i++) {
-        this.options[__keys] = options[__keys];
+        this.options[__keys[__i]] = options[__keys[__i]];
       }
     }
     var _days = day ? day : 1; 
@@ -124,11 +128,14 @@ var vanillaCalendar = {
     var _this = this
     this.activeDates = document.querySelectorAll(
       '[data-calendar-status="active"]'
-    )
+    );
+
     for (var i = 0; i < this.activeDates.length; i++) {
-      this.activeDates[i].addEventListener('click', function (event) {
-        _this.setValue(this.dataset.calendarDate);
-      })
+      if (!this.options.disableSelect) {
+          this.activeDates[i].addEventListener('click', function (event) {
+          _this.setValue(this.dataset.calendarDate);
+        });
+      }
     }
   },
 
@@ -166,7 +173,7 @@ var vanillaCalendar = {
       if (this.selectedEndDate) {
         for (var __i = __startdays; __i <= __enddays; __i++) {
        
-          var ___day = __i < 10 ? '0' + parseInt(__i) : __i;
+          var ___day = leftZero(__i);//__i < 10 ? '0' + parseInt(__i) : __i;
           var ___yyyymm = __selectedStartDate.substring(0, __selectedStartDate.length -2);
           var ___selecteDate = ___yyyymm  + ___day;
          
@@ -233,7 +240,7 @@ var vanillaCalendar = {
     // this.date.setMonth(this.date.getMonth() - 1)
 
 
-    this.label.innerHTML = this.monthsAsString(this.date.getMonth()) + ' ' + this.date.getFullYear();
+    this.label.innerHTML = this.date.getFullYear() + '-' + this.monthsAsString(this.date.getMonth());
     this.dateClicked();
   },
 
@@ -242,6 +249,8 @@ var vanillaCalendar = {
 
     this.removeSchedule();
 
+    var _this = this;
+
     if (obj) {
       this.schedule = obj;
     }
@@ -249,7 +258,6 @@ var vanillaCalendar = {
     var _keyList = Object.keys(this.schedule);
 
     for (i = 0; i < _keyList.length; i++) {
-      console.log(this.schedule[_keyList[i]]);
       var __fromdate = this.schedule[_keyList[i]].fromdate;
       var __todate = this.schedule[_keyList[i]].todate;
       var __text = this.schedule[_keyList[i]].text;
@@ -269,20 +277,24 @@ var vanillaCalendar = {
       __tday = __tday == 0 ? 7 : __tday;
 
       var __newScheduleWrapper = document.createElement('div');
-      __newScheduleWrapper.classList.add('vcal-schdule-wrapper-left-edge');
+      var __scheduleText = document.createElement('span');
+      __scheduleText.classList.add('vcal-schedule-text');
+      __scheduleText.innerHTML = __text;
+
+      __newScheduleWrapper.classList.add('vcal-schedule-wrapper-left-edge');
       
 
       var __newSchedule = document.createElement('div');
       __newScheduleWrapper.appendChild(__newSchedule);
       
 
-      __newSchedule.setAttribute('data-caldendar-schedule-from', __fromdate);
-      __newSchedule.setAttribute('data-caldendar-schedule-to', __todate);
-      __newSchedule.setAttribute('data-caldendar-schedule-grp', _keyList[i]);
+      __newSchedule.setAttribute('data-calendar-schedule-from', __fromdate);
+      __newSchedule.setAttribute('data-calendar-schedule-to', __todate);
+      __newSchedule.setAttribute('data-calendar-schedule-key', _keyList[i]);
 
       __newSchedule.classList.add('vcal-schedule');
       __newSchedule.classList.add('vcal-left-radius');
-      __newSchedule.innerHTML = __text;
+      __newSchedule.appendChild(__scheduleText);
         
 
 
@@ -291,7 +303,6 @@ var vanillaCalendar = {
         __newSchedule.classList.add('vcal-right-radius');
 
 
-        __newScheduleWrapper.classList.add('vcal-schdule-wrapper-right-edge')
         __newScheduleWrapper.style.width = (100 * (__tday - __fday + 1)) + '%';
         __newScheduleWrapper.classList.add('vcal-schedule-wrapper')
         __newScheduleWrapper.classList.add('vcal-schedule-wrapper-right-edge')
@@ -300,6 +311,15 @@ var vanillaCalendar = {
           '[data-calendar-date="' + __fromdate + '"]'
         )[0];
         __el.appendChild(__newScheduleWrapper);
+
+        
+        if (!this.options.disableSelectSchedule) {
+          
+          __newSchedule.addEventListener('click', function (event) {
+            
+            _this.scheduleSelected(this.dataset.calendarScheduleKey);
+          });
+        }
 
       } else {
         __newScheduleWrapper.style.width = (100 * (7 - __fday + 1)) + '%';
@@ -316,18 +336,18 @@ var vanillaCalendar = {
 
         var __nextScheduleWrapper = document.createElement('div');
         __nextScheduleWrapper.classList.add('vcal-schedule-wrapper');
-        __nextScheduleWrapper.classList.add('vcal-schedule-wrapper-right-edge');
+        __nextScheduleWrapper.classList.add('vcal-schedule-wrapper-next-right-edge');
         
         var __nextSchedule = document.createElement('div');
         __nextScheduleWrapper.appendChild(__nextSchedule);
         __nextScheduleWrapper.style.width = 100 * (___diff + 1) + '%';
 
-        __nextSchedule.setAttribute('data-caldendar-from', __fromdate);
-        __nextSchedule.setAttribute('data-caldendar-schedule-to', __todate);
-        __nextSchedule.setAttribute('data-caldendar-schedule-grp', _keyList[i]);
+        __nextSchedule.setAttribute('data-calendar-from', __fromdate);
+        __nextSchedule.setAttribute('data-calendar-schedule-to', __todate);
+        __nextSchedule.setAttribute('data-calendar-schedule-key', _keyList[i]);
 
         if (___diff < 2 ) {
-          __nextSchedule.innerHTML = __text;
+          __nextSchedule.appendChild(__scheduleText);
           __newSchedule.innerHTML = '';
         }
 
@@ -346,11 +366,19 @@ var vanillaCalendar = {
         __el.appendChild(__newScheduleWrapper);
         ___nextEl.appendChild(__nextScheduleWrapper);
 
+        if (!this.options.disableSelectSchedule) {
+          
+          __newSchedule.addEventListener('click', function (event) {
+            _this.scheduleSelected(this.dataset.calendarScheduleKey);
+          });
+
+          __nextSchedule.addEventListener('click', function (event) {
+            _this.scheduleSelected(this.dataset.calendarScheduleKey);
+          });
+        }
       }
     }
-    
-  }
-  ,
+  },
 
   
   removeSchedule: function () {
@@ -376,6 +404,58 @@ var vanillaCalendar = {
     
   },
 
+
+  scheduleSelected : function (key) {
+    this.removeScheduleSelected();
+
+    var _scheduleData = this.schedule[key];
+
+    _scheduleData['key'] = key;
+
+    var _scheduleArr = document.querySelectorAll( 
+      '[data-calendar-schedule-key="' + key + '"]'
+    );
+
+    for (var i = 0; i < _scheduleArr.length; i++) {
+      _scheduleArr[i].classList.add('vcal-schedule--selected');
+    }
+
+    if (this.options.onSelectedSchedule) {
+      this.options.onSelectedSchedule(_scheduleData);
+    }
+  },
+
+
+  removeScheduleSelected : function () {
+
+    var _scheduleArr = document.querySelectorAll('.vcal-schedule');
+
+    for (var i = 0; i < _scheduleArr.length; i++) {
+      _scheduleArr[i].classList.remove('vcal-schedule--selected');
+    }
+
+  },
+
+  updateSchedule : function (obj) {
+    var _keyArr = Object.keys(obj);
+
+    for (var i = 0 ; i < _keyArr.length; i++) {
+      var __key = _keyArr[i];
+      this.schedule[__key] = obj[__key];
+     
+      var _scheduleArr = document.querySelectorAll( 
+        '[data-calendar-schedule-key="' + key + '"]'
+      );
+
+      for (var j = 0; j < _scheduleArr.length; j++) {
+        if (_scheduleArr[j].innerHTML != '') {
+          _scheduleArr[j].innerHTML = this.schedule[__key].text;
+        }
+      }
+    }
+
+  },
+
   leftZero: function (str) {
     return str < 10 ? "0" + str : str
   } ,
@@ -386,18 +466,18 @@ var vanillaCalendar = {
   
   monthsAsString: function (monthIndex) {
     return [
-        1 // '1ì›”'
-      , 2 //,'2ì›”'
-      , 3 //,'3ì›”'
-      , 4 //,'4ì›”'
-      , 5 //,'5ì›”'
-      , 6 //,'6ì›”'
-      , 7 //,'7ì›”'
-      , 8 //,'8ì›”'
-      , 9 //,'9ì›”'
-      , 10//,'10ì›”'
-      , 11//,'11ì›”'
-      , 12//,'12ì›”'
+        1  // '1¿ù'
+      , 2  //,'2¿ù'
+      , 3  //,'3¿ù'
+      , 4  //,'4¿ù'
+      , 5  //,'5¿ù'
+      , 6  //,'6¿ù'
+      , 7  //,'7¿ù'
+      , 8  //,'8¿ù'
+      , 9  //,'9¿ù'
+      , 10 //,'10¿ù'
+      , 11 //,'11¿ù'
+      , 12 //,'12¿ù'
     ][monthIndex]
   },
 

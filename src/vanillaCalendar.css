@@ -88,7 +88,15 @@
   z-index: 200; 
   height: 100%;
   width: 100%;
+  vertical-align: middle;
+  text-align: center;
+  padding-top : 5.5%;
 } 
+
+
+#v-cal .vcal-date .vcal-schedule--selected {
+  background: #d3d3d3;
+}
 
 
 
@@ -109,32 +117,27 @@
   right: -0.5px;
   z-index: 200;
   height: 40%;
-
-
-
 }
 
-
-#v-cal .vcal-date .vcal-schdule-wrapper-left-edge {
-  padding-left : 2rem;
-}
-
-#v-cal .vcal-date .vcal-schdule-wrapper-right-edge {
-  padding-right : 4rem;
+#v-cal .vcal-date .vcal-schedule .vcal-schedule-text {
+  line-height: 100%;
+  margin-top:5px;
+  height:100%;
 }
 
 
 #v-cal .vcal-date .vcal-schedule-wrapper-left-edge {
-  padding-left: 2rem;
-} 
-
+  padding-left : 3rem;
+}
 
 #v-cal .vcal-date .vcal-schedule-wrapper-right-edge {
-  padding-right: 4rem;
-} 
+  padding-right : 5rem;
+}
 
 
-
+#v-cal .vcal-date .vcal-schedule-wrapper-next-right-edge {
+  padding-right : 3rem;
+}
 
 #v-cal .vcal-date .vcal-left-radius {
   border-top-left-radius: 1rem;
