@@ -239,7 +239,7 @@ var vanillaCalendar = {
   },
 
 
-  makeSchdule: function(obj) {
+  makeschedule: function(obj) {
 
     this.removeSchedule();
 
@@ -270,7 +270,7 @@ var vanillaCalendar = {
       __tday = __tday == 0 ? 7 : __tday;
 
       var __newScheduleWrapper = document.createElement('div');
-      __newScheduleWrapper.style.paddingLeft = '1.6rem';
+      __newScheduleWrapper.classList.add('vcal-schedule-wrapper-left-edge');
 
       var __newSchedule = document.createElement('div');
       __newScheduleWrapper.appendChild(__newSchedule);
@@ -280,7 +280,7 @@ var vanillaCalendar = {
       __newSchedule.setAttribute('data-caldendar-schedule-to', __todate);
       __newSchedule.setAttribute('data-caldendar-schedule-grp', _keyList[i]);
 
-      __newSchedule.classList.add('vcal-schdule');
+      __newSchedule.classList.add('vcal-schedule');
       __newSchedule.classList.add('vcal-left-radius');
       __newSchedule.innerHTML = __text;
         
@@ -291,9 +291,9 @@ var vanillaCalendar = {
         __newSchedule.classList.add('vcal-right-radius');
 
 
-        __newScheduleWrapper.style.paddingRight = '1.6rem';
         __newScheduleWrapper.style.width = (100 * (__tday - __fday + 1)) + '%';
-        __newScheduleWrapper.classList.add('vcal-schdule-wrapper')
+        __newScheduleWrapper.classList.add('vcal-schedule-wrapper')
+        __newScheduleWrapper.classList.add('vcal-schedule-wrapper-right-edge')
       
         var __el = document.querySelectorAll(
           '[data-calendar-date="' + __fromdate + '"]'
@@ -302,7 +302,7 @@ var vanillaCalendar = {
 
       } else {
         __newScheduleWrapper.style.width = (100 * (7 - __fday + 1)) + '%';
-        __newScheduleWrapper.classList.add('vcal-schdule-wrapper-right')
+        __newScheduleWrapper.classList.add('vcal-schedule-wrapper-right')
 
         var ___diff = ((__tdate - __fdate) - (7 - __fday + 1));
         var ___nextRowScheduleDate = __tdate - ___diff ;
@@ -313,19 +313,22 @@ var vanillaCalendar = {
         this.date.setDate(___nextRowScheduleDate -1);
         var ___newRowStartDate = this.getYYYYMMDD(this.date)
 
-        
         var __nextScheduleWrapper = document.createElement('div');
-        __nextScheduleWrapper.classList.add('vcal-schdule-wrapper');
+        __nextScheduleWrapper.classList.add('vcal-schedule-wrapper');
+        __nextScheduleWrapper.classList.add('vcal-schedule-wrapper-right-edge');
         
         var __nextSchedule = document.createElement('div');
         __nextScheduleWrapper.appendChild(__nextSchedule);
-        __nextScheduleWrapper.style.paddingRight = '1.6rem';
         __nextScheduleWrapper.style.width = 100 * (___diff + 1) + '%';
 
         __nextSchedule.setAttribute('data-caldendar-from', __fromdate);
         __nextSchedule.setAttribute('data-caldendar-schedule-to', __todate);
         __nextSchedule.setAttribute('data-caldendar-schedule-grp', _keyList[i]);
-
+        
+        if (___diff < 2) {
+          __newSchedule.innerHTML = '';
+          __nextSchedule.innerHTML = __text;
+        }
         
         var __el = document.querySelectorAll(
           '[data-calendar-date="' + ___newRowStartDate + '"]'
@@ -336,7 +339,7 @@ var vanillaCalendar = {
           '[data-calendar-date="' + ___nextRowStartDate + '"]'
         )[0];
 
-        __nextSchedule.classList.add('vcal-schdule');
+        __nextSchedule.classList.add('vcal-schedule');
         __nextSchedule.classList.add('vcal-right-radius');
 
         __el.appendChild(__newScheduleWrapper);
@@ -351,11 +354,11 @@ var vanillaCalendar = {
   
   removeSchedule: function () {
     var __elList = document.querySelectorAll(
-      '[class="vcal-schdule-wrapper"]'
+      '[class="vcal-schedule-wrapper"]'
     );
 
     var __rightList = document.querySelectorAll(
-      '[class="vcal-schdule-wrapper-right"]'
+      '[class="vcal-schedule-wrapper-right"]'
     );
 
     if (__elList) {
@@ -382,18 +385,18 @@ var vanillaCalendar = {
   
   monthsAsString: function (monthIndex) {
     return [
-       '1월'
-      ,'2월'
-      ,'3월'
-      ,'4월'
-      ,'5월'
-      ,'6월'
-      ,'7월'
-      ,'8월'
-      ,'9월'
-      ,'10월'
-      ,'11월'
-      ,'12월'
+        1 // '1월'
+      , 2 //,'2월'
+      , 3 //,'3월'
+      , 4 //,'4월'
+      , 5 //,'5월'
+      , 6 //,'6월'
+      , 7 //,'7월'
+      , 8 //,'8월'
+      , 9 //,'9월'
+      , 10//,'10월'
+      , 11//,'11월'
+      , 12//,'12월'
     ][monthIndex]
   },
 
