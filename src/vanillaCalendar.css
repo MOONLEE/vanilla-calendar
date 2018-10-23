@@ -8,7 +8,8 @@
   --vcal-selected-bg-color: #10989E;
   --vcal-selected-color: #fff;
   --vcal-week-color: #fff;
-  --vcal-schedule-bg-color: #e4f2f2;
+  --vcal-schedule-bg-color-hover: #d3d3d3;
+  /* --vcal-schedule-bg-color:#e4f2f2; */
 }
 
 #v-cal *, #v-cal *:before, #v-cal *:after {
@@ -79,20 +80,24 @@
   padding-bottom: 1.4rem;
   text-align: center;
   text-transform: uppercase;
+  margin: 0;
 }
 
 #v-cal .vcal-date .vcal-schedule {
   display:inline-block;
   position: relative;
-  background: var(--vcal-schedule-bg-color);
+  /* background: var(--vcal-schedule-bg-color); */
   z-index: 200; 
   height: 100%;
   width: 100%;
   vertical-align: middle;
   text-align: center;
-  padding-top : 5.5%;
+  padding-top : 3.5%;
 } 
 
+#v-cal .vcal-date .vcal-schedule:hover {
+  background: var(--vcal-schedule-bg-color-hover)
+}
 
 #v-cal .vcal-date .vcal-schedule--selected {
   background: #d3d3d3;
@@ -127,11 +132,11 @@
 
 
 #v-cal .vcal-date .vcal-schedule-wrapper-left-edge {
-  padding-left : 3rem;
+  padding-left : 4rem;
 }
 
 #v-cal .vcal-date .vcal-schedule-wrapper-right-edge {
-  padding-right : 5rem;
+  padding-right : 6rem;
 }
 
 
