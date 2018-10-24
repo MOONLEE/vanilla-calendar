@@ -93,9 +93,7 @@ var vanillaCalendar = {
     if (this.date.toString() === this.todaysDate.toString()) {
       newDay.classList.add('vcal-date--today')
     }
-    // subMark.classList.add('sub-mark');
     newDay.appendChild(dateEl)
-    // newDay.appendChild(subMark);
     this.month.appendChild(newDay)
     
   },
@@ -111,7 +109,6 @@ var vanillaCalendar = {
     for (var i = 0; i < day; i++) {
 
 
-      //console.log('makeEmptyDay' + i)
         var newDay = document.createElement('div')
         var dateEl = document.createElement('span')
         var _strYear = this.date.getFullYear().toString();
@@ -120,14 +117,8 @@ var vanillaCalendar = {
         newDay.setAttribute('data-calendar-date', _strYear + _strMonth + _strDate)
       dateEl.classList.add('vcal-data-num');
       newDay.className = 'vcal-date'
-      // var _strYear = this.date.getFullYear().toString();
-      // var _strMonth =  (this.date.getMonth() + 1) < 10 ?  '0'+ (this.date.getMonth() + 1).toString() : (this.date.getMonth() + 1).toString()
-      // var _strDate =  this.date.getDate() < 10 ?  '0'+ this.date.getDate().toString() : this.date.getDate().toString()
-      // newDay.setAttribute('data-calendar-date', _strYear + _strMonth + _strDate)
       newDay.classList.add('vcal-date')
-      // subMark.classList.add('sub-mark');
       newDay.appendChild(dateEl)
-      // newDay.appendChild(subMark);
       this.month.appendChild(newDay)
       
         this.date.setDate(this.date.getDate() + 1);
@@ -252,7 +243,7 @@ var vanillaCalendar = {
     this.date.setMonth(this.date.getMonth() - 1)
 
 
-    this.label.innerHTML = this.date.getFullYear() + '-' + this.monthsAsString(this.date.getMonth());
+    this.label.innerHTML = this.date.getFullYear() + '년 ' + this.monthsAsString(this.date.getMonth());
     this.dateClicked();
   },
 
@@ -269,7 +260,8 @@ var vanillaCalendar = {
 
     var _keyList = Object.keys(this.schedule);
 
-    for (i = 0; i < _keyList.length; i++) {
+    for (var i = 0; i < _keyList.length; i++) {
+      this.schedule.key = _keyList[i];
       var __fromdate = this.schedule[_keyList[i]].fromdate;
       var __todate = this.schedule[_keyList[i]].todate;
       var __text = this.schedule[_keyList[i]].text;
@@ -296,9 +288,6 @@ var vanillaCalendar = {
       __tday = __tday == 0 ? 7 : __tday;
 
       var __newScheduleWrapper = document.createElement('div');
-      // var __scheduleText = document.createElement('span');
-      // __scheduleText.classList.add('vcal-schedule-text');
-      // __scheduleText.innerHTML = __text;
 
       __newScheduleWrapper.classList.add('vcal-schedule-wrapper-left-edge');
       
@@ -314,7 +303,6 @@ var vanillaCalendar = {
 
       __newSchedule.classList.add('vcal-schedule');
       __newSchedule.classList.add('vcal-left-radius');
-      // __newSchedule.appendChild(__scheduleText);
 
       if (  (__fday < __tday && __fmonth == __tmonth && (parseInt(__tdate) - parseInt(__fdate) <= 7 ) )
       || (parseInt(__fmonth)  < parseInt(__tmonth) && parseInt(__fdate) > parseInt(__tdate) )) {
@@ -372,7 +360,6 @@ var vanillaCalendar = {
         __nextSchedule.setAttribute('data-calendar-schedule-key', _keyList[i]);
 
         if (___diff < 2 ) {
-          // __nextSchedule.appendChild(__scheduleText);
           __nextSchedule.innerHTML = __text
           __newSchedule.innerHTML = '';
         }
@@ -402,8 +389,6 @@ var vanillaCalendar = {
             _this.scheduleSelected(this.dataset.calendarScheduleKey);
           });
         }
-
-            
         
         if (__style) {
           __newSchedule.classList.add(__style);
@@ -417,12 +402,15 @@ var vanillaCalendar = {
   
   removeSchedule: function () {
     var __elList = document.querySelectorAll(
-      '[class="vcal-schedule-wrapper"]'
+      '.vcal-schedule-wrapper'
     );
 
+    console.log(__elList);
+
     var __rightList = document.querySelectorAll(
-      '[class="vcal-schedule-wrapper-right"]'
+      '.vcal-schedule-wrapper-right'
     );
+    console.log(__rightList);
 
     if (__elList) {
       for (var i = 0; i < __elList.length; i++) {
@@ -440,11 +428,14 @@ var vanillaCalendar = {
 
 
   scheduleSelected : function (key) {
-    this.removeScheduleSelected();
 
+
+    
     var _scheduleData = this.schedule[key];
 
     _scheduleData['key'] = key;
+    
+    this.removeScheduleSelected();
 
     var _scheduleArr = document.querySelectorAll( 
       '[data-calendar-schedule-key="' + key + '"]'
@@ -479,8 +470,6 @@ var vanillaCalendar = {
       this.schedule[__key].style = obj[__key].style;
       
 
-      console.log(this.schedule[__key]);
-     
       var _scheduleArr = document.querySelectorAll( 
         '[data-calendar-schedule-key="' + __key + '"]'
       );
@@ -516,18 +505,18 @@ var vanillaCalendar = {
   
   monthsAsString: function (monthIndex) {
     return [
-        1  // '1월'
-      , 2  //,'2월'
-      , 3  //,'3월'
-      , 4  //,'4월'
-      , 5  //,'5월'
-      , 6  //,'6월'
-      , 7  //,'7월'
-      , 8  //,'8월'
-      , 9  //,'9월'
-      , 10 //,'10월'
-      , 11 //,'11월'
-      , 12 //,'12월'
+        '1월'
+      , '2월'
+      , '3월'
+      , '4월'
+      , '5월'
+      , '6월'
+      , '7월'
+      , '8월'
+      , '9월'
+      , '10월'
+      , '11월'
+      , '12월'
     ][monthIndex]
   },
 

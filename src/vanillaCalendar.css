@@ -156,7 +156,7 @@
 }
 
 #v-cal .vcal-body {
-  background-color: rgba(var(vcal-bg-color), 0.3);
+  background-color: rgba(var(--vcal-bg-color), 0.3);
   display: flex;
   flex-wrap: wrap;
   position: relative;
