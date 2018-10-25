@@ -12,15 +12,19 @@ var vanillaCalendar = {
     disablePastDays: false,
     disableSelect: false,
     disableSelectSchedule: true,
+    disableMultiSelectScedule: true,
     onSelectedSchedule: null 
+
   },
   date: new Date(),
   todaysDate: new Date(),
   schedule: {}, 
   selectedSchedule : null,
+  calendarYear: null,
+  calendarMonth: null,
   
 
-  init: function (options, month, day) {
+  init: function (options, year , month, day) {
 
     if (options) {
       var __keys = Object.keys(options)
@@ -28,12 +32,16 @@ var vanillaCalendar = {
         this.options[__keys[__i]] = options[__keys[__i]];
       }
     }
+    this.calendarYear = year;
+    this.calendarMonth = month;
     var _days = day ? day : 1; 
     var _month = month ? month - 1: this.date.getDate();
-    this.date.setDate(1)
+    
+    this.date.setDate(1);
+    this.date.setFullYear(year);
     this.date.setMonth(_month);
-    this.createMonth()
-    this.createListeners()
+    this.createMonth();
+    this.createListeners();
   },
 
   createListeners: function () {
@@ -86,7 +94,10 @@ var vanillaCalendar = {
     if (this.options.disablePastDays && this.date.getTime() <= this.todaysDate.getTime() - 1) {
       newDay.classList.add('vcal-date--disabled')
     } else {
-      newDay.classList.add('vcal-date--active')
+      if (this.options.disableSelect == false) {
+        newDay.classList.add('vcal-date--active');
+      }
+
       newDay.setAttribute('data-calendar-status', 'active')
     }
 
@@ -249,7 +260,6 @@ var vanillaCalendar = {
 
 
   makeschedule: function(obj) {
-
     this.removeSchedule();
 
     var _this = this;
@@ -261,7 +271,7 @@ var vanillaCalendar = {
     var _keyList = Object.keys(this.schedule);
 
     for (var i = 0; i < _keyList.length; i++) {
-      this.schedule.key = _keyList[i];
+      this.schedule[_keyList[i]].key = _keyList[i];
       var __fromdate = this.schedule[_keyList[i]].fromdate;
       var __todate = this.schedule[_keyList[i]].todate;
       var __text = this.schedule[_keyList[i]].text;
@@ -275,14 +285,17 @@ var vanillaCalendar = {
       
       var __fmonth = __fromdate.substring(__fromdate.length-4, __fromdate.length-2);
       var __tmonth = __todate.substring(__todate.length-4, __todate.length-2);
+      
+      var __fyear = __fromdate.substring(0, 4);
+      var __tyear = __todate.substring(0, 4);
 
+      var __fdateObj = new Date(__fyear, parseInt(__fmonth) - 1 , __fdate);
+      var __tdateObj = new Date(__tyear, parseInt(__tmonth) - 1, __tdate)
 
-      this.date.setDate(__fdate);
-      this.date.setMonth(parseInt(__fmonth)-1);
-      var __fday = this.date.getDay();
-      this.date.setDate(__tdate);
-      this.date.setMonth(parseInt(__tmonth)-1);
-      var __tday = this.date.getDay();
+      var __dateDifff = this.dateDiff(__fdateObj, __tdateObj);
+
+      var __fday = __fdateObj.getDay()
+      var __tday = __tdateObj.getDay();
 
       __fday = __fday == 0 ? 7 : __fday;
       __tday = __tday == 0 ? 7 : __tday;
@@ -300,15 +313,18 @@ var vanillaCalendar = {
       __newSchedule.setAttribute('data-calendar-schedule-from', __fromdate);
       __newSchedule.setAttribute('data-calendar-schedule-to', __todate);
       __newSchedule.setAttribute('data-calendar-schedule-key', _keyList[i]);
-
+      __newSchedule.setAttribute('data-schedule-selected', 'false');
+      __newSchedule.setAttribute('data-schedule-disable', 'false');
+      
       __newSchedule.classList.add('vcal-schedule');
       __newSchedule.classList.add('vcal-left-radius');
 
-      if (  (__fday < __tday && __fmonth == __tmonth && (parseInt(__tdate) - parseInt(__fdate) <= 7 ) )
-      || (parseInt(__fmonth)  < parseInt(__tmonth) && parseInt(__fdate) > parseInt(__tdate) )) {
+      if (  
+          (__fday < __tday && __fmonth == __tmonth && __dateDifff <= 7 )
+      ||  (parseInt(__fmonth) < parseInt(__tmonth) && __tday > __fday )
+      ) {
 
         __newSchedule.classList.add('vcal-right-radius');
-
 
         __newScheduleWrapper.style.width = (100 * (Math.abs(__tday - __fday) + 1)) + '%';
         __newScheduleWrapper.classList.add('vcal-schedule-wrapper')
@@ -338,14 +354,13 @@ var vanillaCalendar = {
         __newScheduleWrapper.style.width = (100 * (7 - __fday + 1)) + '%';
         __newScheduleWrapper.classList.add('vcal-schedule-wrapper-right')
 
-        var ___diff = ((__tdate - __fdate) - (7 - __fday + 1));
-        var ___nextRowScheduleDate = __tdate - ___diff ;
-
-        this.date.setDate(___nextRowScheduleDate);
-        var ___nextRowStartDate = this.getYYYYMMDD(this.date)
         
-        this.date.setDate(___nextRowScheduleDate -1);
-        var ___newRowStartDate = this.getYYYYMMDD(this.date)
+        ___diff = __dateDifff - (7 - __fday + 1);
+
+        __tdateObj.setDate(__tdateObj.getDate() - ___diff);
+        var ___nextRowStartDate = this.getYYYYMMDD(__tdateObj)
+        __tdateObj.setDate(__tdateObj.getDate() -1);
+        var ___newRowStartDate = this.getYYYYMMDD(__tdateObj)
 
         var __nextScheduleWrapper = document.createElement('div');
         __nextScheduleWrapper.classList.add('vcal-schedule-wrapper');
@@ -358,8 +373,9 @@ var vanillaCalendar = {
         __nextSchedule.setAttribute('data-calendar-from', __fromdate);
         __nextSchedule.setAttribute('data-calendar-schedule-to', __todate);
         __nextSchedule.setAttribute('data-calendar-schedule-key', _keyList[i]);
-
-        if (___diff < 2 ) {
+        __nextSchedule.setAttribute('data-schedule-selected', 'false');
+        __nextSchedule.setAttribute('data-schedule-disable', 'false');
+        if (___diff < 2 && (7 - __fday) < 2) {
           __nextSchedule.innerHTML = __text
           __newSchedule.innerHTML = '';
         }
@@ -405,12 +421,10 @@ var vanillaCalendar = {
       '.vcal-schedule-wrapper'
     );
 
-    console.log(__elList);
 
     var __rightList = document.querySelectorAll(
       '.vcal-schedule-wrapper-right'
     );
-    console.log(__rightList);
 
     if (__elList) {
       for (var i = 0; i < __elList.length; i++) {
@@ -426,23 +440,86 @@ var vanillaCalendar = {
     
   },
 
+  setDiableSchedule: function (key) {
+    
+    var _scheduleArr = document.querySelectorAll( 
+      '[data-calendar-schedule-key="' + key + '"]'
+    );
+
+    for (var i = 0; i < _scheduleArr.length; i++) {
+      _scheduleArr[i].classList.add('vcal-schedule--disable');
+      _scheduleArr[i].setAttribute('data-schedule-disable', 'true');
+    }
+  },
+
+  setDiableScheduleAll: function () {
+    
+    var _scheduleArr = document.querySelectorAll('.vcal-schedule');
+
+    for (var i = 0; i < _scheduleArr.length; i++) {
+      _scheduleArr[i].classList.add('vcal-schedule--disable');
+      _scheduleArr[i].setAttribute('data-schedule-disable', 'true');
+    }
+  },
+
+  
+  setEnableScheduleAll: function () {
+    var _scheduleArr = document.querySelectorAll('.vcal-schedule');
+
+    for (var i = 0; i < _scheduleArr.length; i++) {
+      _scheduleArr[i].classList.remove('vcal-schedule--disable');
+      _scheduleArr[i].setAttribute('data-schedule-disable', 'false');
+    }
+  },
+
+  setEnableSchedule: function (key) {
+    
+    var _scheduleArr = document.querySelectorAll( 
+      '[data-calendar-schedule-key="' + key + '"]'
+    );
+
+    for (var i = 0; i < _scheduleArr.length; i++) {
+      _scheduleArr[i].classList.remove('vcal-schedule--disable');
+      _scheduleArr[i].setAttribute('data-schedule-disable', 'false');
+    }
+  },
 
   scheduleSelected : function (key) {
 
+    var _selectedScheduleArr = document.querySelectorAll( 
+      '[data-schedule-selected="true"]'
+    );
+    
+    var _isSelected = false;
 
+    for (var i = 0; i < _selectedScheduleArr.length; i++) {
+      if (!_isSelected && _selectedScheduleArr[i].dataset.calendarScheduleKey == key) {
+        _isSelected = true;
+      }
+    }
     
     var _scheduleData = this.schedule[key];
 
-    _scheduleData['key'] = key;
+    this.removeScheduleSelected(key);
     
-    this.removeScheduleSelected();
+
+    if (_isSelected) {
+      this.options.onSelectedSchedule({});
+      return;
+    }
 
     var _scheduleArr = document.querySelectorAll( 
       '[data-calendar-schedule-key="' + key + '"]'
     );
 
     for (var i = 0; i < _scheduleArr.length; i++) {
+
+      if (_scheduleArr[i].dataset.scheduleDisable == 'true') {
+        return;
+      }
+
       _scheduleArr[i].classList.add('vcal-schedule--selected');
+      _scheduleArr[i].setAttribute('data-schedule-selected', 'true');
     }
 
     if (this.options.onSelectedSchedule) {
@@ -450,15 +527,40 @@ var vanillaCalendar = {
     }
   },
 
+  getSelectedSchedule: function() {
+    
+    var _selectedScheduleArr = document.querySelectorAll( 
+      '[data-schedule-selected="true"]'
+    );
+    var _arry = [];
+    var _keyList = [];
+    for (var i = 0; i < _selectedScheduleArr.length; i++) {
+      var __key = _selectedScheduleArr[i].dataset.calendarScheduleKey
+      
+      if (_keyList.indexOf(__key) < 0) {
+        _keyList.push(__key);
+        _arry.push(this.schedule[__key]);
+      }
+      
+    }
+  
+    return _arry;
 
-  removeScheduleSelected : function () {
+  },
+
+  removeScheduleSelected : function (key) {
 
     var _scheduleArr = document.querySelectorAll('.vcal-schedule');
 
     for (var i = 0; i < _scheduleArr.length; i++) {
-      _scheduleArr[i].classList.remove('vcal-schedule--selected');
+      if (this.options.disableMultiSelectScedule) {
+        _scheduleArr[i].classList.remove('vcal-schedule--selected');
+        _scheduleArr[i].setAttribute('data-schedule-selected', 'false');
+      } else if (_scheduleArr[i].dataset.calendarScheduleKey == key) {
+        _scheduleArr[i].classList.remove('vcal-schedule--selected');
+        _scheduleArr[i].setAttribute('data-schedule-selected', 'false');
+      }
     }
-
   },
 
   updateScheduleText : function (obj) {
@@ -500,7 +602,7 @@ var vanillaCalendar = {
   } ,
 
   getYYYYMMDD: function (obj) {
-    return this.date.getFullYear().toString() + this.leftZero((this.date.getMonth() + 1).toString()) + this.leftZero(this.date.getDate().toString())
+    return obj.getFullYear().toString() + this.leftZero((obj.getMonth() + 1).toString()) + this.leftZero(obj.getDate().toString())
   },
   
   monthsAsString: function (monthIndex) {
@@ -528,5 +630,20 @@ var vanillaCalendar = {
     for (var i = 0; i < this.activeDates.length; i++) {
       this.activeDates[i].classList.remove('vcal-date--selected')
     }
+  },
+
+  dateDiff: function (_date1, _date2) {
+    var diffDate_1 = _date1 instanceof Date ? _date1 : new Date(_date1);
+    var diffDate_2 = _date2 instanceof Date ? _date2 : new Date(_date2);
+ 
+    diffDate_1 = new Date(diffDate_1.getFullYear(), diffDate_1.getMonth(), diffDate_1.getDate());
+    diffDate_2 = new Date(diffDate_2.getFullYear(), diffDate_2.getMonth(), diffDate_2.getDate());
+ 
+    var diff = Math.abs(diffDate_2.getTime() - diffDate_1.getTime());
+    diff = Math.ceil(diff / (1000 * 3600 * 24));
+ 
+    return diff;
   }
+
+
 }
